@@ -6,59 +6,24 @@ import {
   MapPin, 
   Linkedin, 
   Twitter, 
-  Facebook,
-  ArrowRight
+  Facebook
 } from 'lucide-react';
-import { Button } from './ui/button';
-import { useEffect, useState } from 'react';
 import type { SiteContent } from '@shared/content';
-import { defaultContent } from '@shared/content';
 
-export default function Footer() {
-  const [footer, setFooter] = useState(defaultContent.footer);
+interface FooterProps { data?: SiteContent['footer']; }
 
-  useEffect(() => {
-    fetch('/api/content', { credentials: 'include' })
-      .then(r => r.json())
-      .then((data: SiteContent) => { if (data?.footer) setFooter(data.footer); })
-      .catch(() => {});
-  }, []);
+export default function Footer({ data }: FooterProps) {
+  const socialMap = { LinkedIn: Linkedin, Twitter: Twitter, Facebook: Facebook } as const;
+  const socialLinks = (data?.socials || []).map(s => ({ ...s, Icon: socialMap[s.name] }));
 
   return (
-    <footer className="bg-gradient-to-b from-background to-blue-50/30 border-t border-border/10">
+    <footer className="bg-gradient-to-b from-background to-blue-50/30 border-t border-blue-200/50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Newsletter Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="py-12 border-b border-border/10"
-        >
-          <div className="text-center">
-            <h3 className="text-2xl font-bold text-foreground mb-4">
-              {footer?.newsletterTitle}
-            </h3>
-            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-              {footer?.newsletterText}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="tu@email.com"
-                className="flex-1 px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-tech-primary"
-              />
-              <Button className="gradient-bg text-white hover:shadow-lg hover:shadow-tech-primary/25 transition-all duration-300 group">
-                Suscribirse
-                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </div>
-          </div>
-        </motion.div>
 
         {/* Main Footer Content */}
-        <div className="py-12">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-6">
+        <div className="py-16">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
+
             {/* Company Info */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -67,113 +32,72 @@ export default function Footer() {
               transition={{ duration: 0.6 }}
               className="lg:col-span-2"
             >
-              <Link to="/" className="flex items-center space-x-2 mb-6">
-                <div className="gradient-bg w-8 h-8 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">{footer?.brand.logoLetter}</span>
+              <Link to="/" className="flex items-center space-x-3 mb-6">
+                <div className="gradient-bg w-10 h-10 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold">{data?.brand.logoLetter || 'T'}</span>
                 </div>
-                <span className="text-xl font-bold text-foreground">{footer?.brand.companyName}</span>
+                <span className="text-xl font-bold text-foreground">{data?.brand.companyName || 'Tecnologik S.A.'}</span>
               </Link>
-              <p className="text-muted-foreground mb-6 max-w-md">
-                {footer?.brand.description}
+              <p className="text-muted-foreground mb-8 leading-relaxed">
+                {data?.brand.description || 'Transformamos la infraestructura tecnológica de tu empresa con soluciones integrales.'}
               </p>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                  <Mail className="h-4 w-4 text-tech-primary" />
-                  {footer?.contact.email}
-                </div>
-                <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                  <Phone className="h-4 w-4 text-tech-primary" />
-                  {footer?.contact.phone}
-                </div>
-                <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                  <MapPin className="h-4 w-4 text-tech-primary" />
-                  {footer?.contact.location}
+
+              {/* Contact Information (solo email aquí, ubicación aparece en su propia columna) */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 text-sm">
+                  <Mail className="h-4 w-4 text-tech-primary flex-shrink-0" />
+                  <a href={`mailto:${data?.contact.email || 'info@tecnologik.net'}`} className="text-muted-foreground hover:text-tech-primary transition-colors">
+                    {data?.contact.email || 'info@tecnologik.net'}
+                  </a>
                 </div>
               </div>
             </motion.div>
 
-            {/* Services */}
+            {/* Phone Numbers */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.1 }}
+              className="lg:col-span-1"
             >
-              <h3 className="text-sm font-semibold text-foreground mb-4">Servicios</h3>
-              <ul className="space-y-3">
-                {(footer?.navigation.services ?? []).map((item) => (
-                  <li key={item.name}>
-                    <a
-                      href={item.href}
-                      className="text-sm text-muted-foreground hover:text-tech-primary transition-colors"
-                    >
-                      {item.name}
-                    </a>
-                  </li>
+              <h4 className="font-semibold text-foreground mb-6 flex items-center gap-2">
+                <Phone className="h-5 w-5 text-tech-primary" />
+                Teléfonos
+              </h4>
+              <div className="space-y-3 text-sm text-muted-foreground">
+                {(data?.contact.phoneNumbers || [data?.contact.phone || '+(502) 0000-0000']).map(p => (
+                  <div key={p}>{p}</div>
                 ))}
-              </ul>
+              </div>
             </motion.div>
 
-            {/* Company */}
+            {/* Location & Social */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
+              className="lg:col-span-1"
             >
-              <h3 className="text-sm font-semibold text-foreground mb-4">Empresa</h3>
-              <ul className="space-y-3">
-                {(footer?.navigation.company ?? []).map((item) => (
-                  <li key={item.name}>
-                    <a
-                      href={item.href}
-                      className="text-sm text-muted-foreground hover:text-tech-primary transition-colors"
-                    >
-                      {item.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
+              <h4 className="font-semibold text-foreground mb-6 flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-tech-primary" />
+                Ubicación
+              </h4>
+              <div className="text-sm text-muted-foreground mb-8 leading-relaxed whitespace-pre-line">
+                {data?.contact.location || 'Ciudad'}
+              </div>
 
-            {/* Support */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              <h3 className="text-sm font-semibold text-foreground mb-4">Soporte</h3>
-              <ul className="space-y-3">
-                {(footer?.navigation.support ?? []).map((item) => (
-                  <li key={item.name}>
-                    <a
-                      href={item.href}
-                      className="text-sm text-muted-foreground hover:text-tech-primary transition-colors"
-                    >
-                      {item.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-
-            {/* Social */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              <h3 className="text-sm font-semibold text-foreground mb-4">Síguenos</h3>
+              <h4 className="font-semibold text-foreground mb-4">Síguenos</h4>
               <div className="flex gap-3">
-                {(footer?.socials ?? []).map((social) => {
-                  const IconComponent = social.name === 'LinkedIn' ? Linkedin : social.name === 'Twitter' ? Twitter : Facebook;
+                {socialLinks.map((social) => {
+                  const IconComponent = social.Icon;
                   return (
                     <a
                       key={social.name}
                       href={social.href}
-                      className="w-8 h-8 bg-tech-primary/10 rounded-lg flex items-center justify-center text-tech-primary hover:bg-tech-primary hover:text-white transition-colors"
+                      className="w-9 h-9 bg-tech-primary/10 rounded-lg flex items-center justify-center text-tech-primary hover:bg-tech-primary hover:text-white transition-colors"
+                      title={social.name}
                     >
                       <IconComponent className="h-4 w-4" />
                     </a>
@@ -189,12 +113,12 @@ export default function Footer() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="border-t border-border/10 py-6"
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="border-t border-blue-200/30 py-6"
         >
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
-              {footer?.copyright}
+              {data?.copyright || '© 2024 Tecnologik S.A. Todos los derechos reservados.'}
             </p>
             <div className="flex gap-6 text-sm text-muted-foreground">
               <a href="#" className="hover:text-tech-primary transition-colors">

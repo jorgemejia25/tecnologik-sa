@@ -1,8 +1,26 @@
 import type { Config } from "tailwindcss";
+import animate from "tailwindcss-animate";
 
 export default {
   darkMode: ["class"],
   content: ["./client/**/*.{ts,tsx}"],
+  // Safelist needed because many gradient color utility classes (from-*/to-*)
+  // are only present dynamically via JSON (content store) and would be purged.
+  safelist: [
+    // Blue gradients used across benefits & continuity
+    'from-blue-500','to-blue-600',
+    'from-blue-400','to-blue-500',
+    'from-blue-600','to-blue-700',
+    'from-blue-700','to-blue-800',
+    'from-blue-800','to-blue-900',
+    // Other palettes in digital transformation & services
+    'from-emerald-500','to-emerald-600',
+    'from-purple-500','to-purple-600',
+    'from-orange-500','to-orange-600',
+    'from-red-500','to-red-600',
+    'from-indigo-500','to-indigo-600',
+    'from-teal-500','to-teal-600'
+  ],
   prefix: "",
   theme: {
     container: {
@@ -109,5 +127,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [animate],
 } satisfies Config;

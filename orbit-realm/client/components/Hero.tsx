@@ -1,21 +1,18 @@
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import { Button } from './ui/button';
-import type { SiteContent, HeroContent } from '@shared/content';
-import { defaultContent } from '@shared/content';
+import type { HeroContent } from '@shared/content';
 
-export default function Hero() {
-  const [hero, setHero] = useState<HeroContent>(defaultContent.hero);
+interface HeroProps {
+  data?: HeroContent;
+}
 
-  useEffect(() => {
-    fetch('/api/content', { credentials: 'include' })
-      .then(r => r.json())
-      .then((data: SiteContent) => {
-        if (data?.hero) setHero(data.hero);
-      })
-      .catch(() => { /* ignore, keep defaults */ });
-  }, []);
+export default function Hero({ data }: HeroProps) {
+  const features = data?.features || [
+    'Evaluación integral de infraestructura',
+    'Ciberseguridad empresarial avanzada',
+    'Optimización de procesos tecnológicos'
+  ];
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-background to-blue-50/30">
@@ -44,7 +41,7 @@ export default function Hero() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-tech-primary opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-tech-primary"></span>
             </span>
-            {hero.badge}
+            {data?.badge || 'Líder en consultoría tecnológica empresarial'}
           </motion.div>
 
           {/* Main heading */}
@@ -54,8 +51,8 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.5 }}
             className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl mb-6"
           >
-            {hero.title}{' '}
-            <span className="gradient-text">{hero.highlight}</span>
+            {data?.title || 'Hacemos que la gestión de tu'}{' '}
+            <span className="gradient-text">{data?.highlight || 'empresa sea eficiente'}</span>
           </motion.h1>
 
           {/* Subtitle */}
@@ -65,7 +62,7 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.6 }}
             className="mx-auto max-w-2xl text-lg leading-8 text-muted-foreground mb-8"
           >
-            {hero.subtitle}
+            {data?.subtitle || 'En Tecnologik S.A. transformamos la infraestructura tecnológica de tu empresa con soluciones integrales de evaluación, ciberseguridad y optimización que impulsan el crecimiento sostenible.'}
           </motion.p>
 
           {/* Features list */}
@@ -75,7 +72,7 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.7 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-10"
           >
-            {hero.features.map((feature, index) => (
+            {features.map((feature, index) => (
               <motion.div
                 key={feature}
                 initial={{ opacity: 0, x: -20 }}
@@ -100,7 +97,7 @@ export default function Hero() {
               size="lg"
               className="gradient-bg text-white hover:shadow-xl hover:shadow-tech-primary/25 transition-all duration-300 group"
             >
-              {hero.primaryCta}
+              {data?.primaryCta || 'Comenzar evaluación gratuita'}
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Button>
             <Button
@@ -108,7 +105,7 @@ export default function Hero() {
               size="lg"
               className="border-tech-primary text-tech-primary hover:bg-tech-primary hover:text-white transition-colors duration-300"
             >
-              {hero.secondaryCta}
+              {data?.secondaryCta || 'Ver nuestros servicios'}
             </Button>
           </motion.div>
 
@@ -119,7 +116,11 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 1 }}
             className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-3"
           >
-            {hero.stats.map((stat, index) => (
+            {(data?.stats || [
+              { value: '200+', label: 'Empresas atendidas' },
+              { value: '99.9%', label: 'Uptime garantizado' },
+              { value: '24/7', label: 'Soporte técnico' }
+            ]).map((stat, index) => (
               <motion.div
                 key={stat.label}
                 initial={{ opacity: 0, scale: 0.9 }}

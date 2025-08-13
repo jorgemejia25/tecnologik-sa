@@ -122,8 +122,35 @@ export default function Admin() {
               <span className="text-red-600 text-sm">{errorMsg}</span>
             )}
           </div>
-          <p className="text-xs text-muted-foreground mt-3">
-            Formato esperado mínimo: {"{ hero: { badge, title, highlight, subtitle, features, primaryCta, secondaryCta, stats } }"}
+          <p className="text-xs text-muted-foreground mt-3 space-y-1">
+            <span className="block font-semibold">Formato esperado (claves principales):</span>
+            <code className="block whitespace-pre overflow-auto p-2 bg-muted rounded text-[10px] leading-tight">{
+`{
+  hero: { ... },
+  header: { nav: [] },
+  services: { ... },
+  methodology: { ... },
+  integrations: { ... },
+  certifications: { ... },
+  benefitsSection: {
+    badge, title, subtitle,
+    categories: [ { icon, title, color, benefits: [ { icon, title, description } ] } ]
+  },
+  continuity: {
+    badge, title, subtitle,
+    processes: [ { icon, acronym, title, subtitle, description, color } ],
+    benefits: [ { icon, title, description } ]
+  },
+  digitalTransformation: {
+    objectiveTitle, objectiveDescription,
+    keyComponents: [ { icon, title, description, details[], color } ],
+    roadmap: [ { stage, title, activities, duration } ],
+    successIndicators: [ { icon, metric, target, color } ],
+    benefitsOperativos: [],
+    benefitsEstrategicos: []
+  },
+  footer: { ... }
+}`}</code>
           </p>
         </CardContent>
       </Card>

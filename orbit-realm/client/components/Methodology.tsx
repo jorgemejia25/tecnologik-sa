@@ -1,25 +1,82 @@
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Search, 
-  FileText, 
-  Settings, 
-  CheckCircle, 
+import {
+  Search,
+  FileText,
+  Settings,
+  CheckCircle,
+  ArrowRight,
   Clock,
   Target,
-  Lightbulb
+  Lightbulb,
+  ClipboardList,
+  BarChart3,
+  TrendingUp,
+  Users
 } from 'lucide-react';
-import type { SiteContent } from '@shared/content';
-import { defaultContent } from '@shared/content';
 
 export default function Methodology() {
-  const [content, setContent] = useState(defaultContent.methodology);
-  useEffect(() => {
-    fetch('/api/content', { credentials: 'include' })
-      .then(r => r.json())
-      .then((data: SiteContent) => { if (data?.methodology) setContent(data.methodology); })
-      .catch(() => {});
-  }, []);
+  const steps = [
+    {
+      icon: ClipboardList,
+      title: 'Sistemas de Evaluación',
+      description: 'Objetivos, alcance y planificación',
+      details: 'Definimos objetivos claros, establecemos el alcance del proyecto y desarrollamos una planificación detallada para la evaluación integral.',
+      color: 'from-blue-500 to-blue-600'
+    },
+    {
+      icon: Search,
+      title: 'Revisión Integral',
+      description: 'Políticas, procedimientos y controles internos',
+      details: 'Evaluamos políticas existentes, analizamos procedimientos operativos, revisamos controles internos y identificamos riesgos asociados.',
+      color: 'from-emerald-500 to-emerald-600'
+    },
+    {
+      icon: BarChart3,
+      title: 'Presentación de Situación Actual',
+      description: 'Marcos de referencia COBIT, ITIL, ISO 27001',
+      details: 'Presentamos la situación actual utilizando marcos de referencia reconocidos como COBIT, ITIL e ISO 27001 para una evaluación estandarizada.',
+      color: 'from-purple-500 to-purple-600'
+    },
+    {
+      icon: TrendingUp,
+      title: 'Recomendaciones',
+      description: 'Estrategias para mejora continua',
+      details: 'Desarrollamos recomendaciones específicas y estrategias personalizadas para la mejora continua de la infraestructura tecnológica.',
+      color: 'from-orange-500 to-orange-600'
+    },
+    {
+      icon: FileText,
+      title: 'Entrega y Aceptación',
+      description: 'Informe de resultados de evaluación',
+      details: 'Entregamos un informe detallado de los resultados de la evaluación y gestionamos la aceptación formal del cliente.',
+      color: 'from-red-500 to-red-600'
+    },
+    {
+      icon: Settings,
+      title: 'Integración e Implementación',
+      description: 'Soluciones y seguimiento a largo plazo',
+      details: 'Integramos e implementamos las soluciones recomendadas con seguimiento continuo a mediano y largo plazo para asegurar el éxito.',
+      color: 'from-indigo-500 to-indigo-600'
+    }
+  ];
+
+  const benefits = [
+    {
+      icon: Clock,
+      title: 'Tiempo de implementación reducido',
+      description: 'Metodología probada que acelera los tiempos de entrega'
+    },
+    {
+      icon: Target,
+      title: 'Resultados medibles',
+      description: 'KPIs claros y reportes detallados de progreso'
+    },
+    {
+      icon: Lightbulb,
+      title: 'Innovación continua',
+      description: 'Adopción de las mejores prácticas del mercado'
+    }
+  ];
 
   return (
     <section id="metodologia" className="py-24 bg-blue-50/30">
@@ -33,19 +90,19 @@ export default function Methodology() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-4">
-            {content?.headerTitle?.split('Metodología')[0]}
-            <span className="gradient-text">{content?.headerTitle?.includes('Metodología') ? 'Metodología' : ''}</span>
+            Nuestra <span className="gradient-text">Metodología</span>
           </h2>
           <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-            {content?.headerSubtitle}
+            Un enfoque estructurado y probado que garantiza resultados exitosos 
+            en cada proyecto de transformación tecnológica.
           </p>
         </motion.div>
 
         {/* Process Steps */}
         <div className="mb-16">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
-            {(content?.steps ?? []).map((step, index, arr) => {
-              const IconComponent = index === 0 ? Search : index === 1 ? FileText : index === 2 ? Settings : CheckCircle;
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+            {steps.map((step, index) => {
+              const IconComponent = step.icon;
               return (
                 <motion.div
                   key={step.title}
@@ -56,15 +113,15 @@ export default function Methodology() {
                   className="relative group"
                 >
                   {/* Connection line */}
-                  {index < arr.length - 1 && (
-                    <div className="hidden lg:block absolute top-6 left-full w-full h-0.5 bg-gradient-to-r from-tech-primary/30 to-transparent z-0" />
+                  {index < steps.length - 1 && (
+                    <div className="hidden xl:block absolute top-6 left-full w-full h-0.5 bg-gradient-to-r from-tech-primary/30 to-transparent z-0" />
                   )}
                   
-                  <div className="relative z-10 text-center">
-                    <div className={`inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                  <div className="relative z-10 text-center bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-all duration-300 h-full">
+                    <div className={`inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br ${step.color} mb-4 group-hover:scale-110 transition-transform duration-300`}>
                       <IconComponent className="h-6 w-6 text-white" />
                     </div>
-                    <h3 className="text-xl font-bold text-foreground mb-2">{step.title}</h3>
+                    <h3 className="text-lg font-bold text-foreground mb-2">{step.title}</h3>
                     <p className="text-sm text-muted-foreground mb-4">{step.description}</p>
                     <p className="text-xs text-muted-foreground/80 leading-relaxed">{step.details}</p>
                   </div>
@@ -82,8 +139,8 @@ export default function Methodology() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="grid grid-cols-1 gap-8 md:grid-cols-3"
         >
-          {(content?.benefits ?? []).map((benefit, index) => {
-            const IconComponent = index === 0 ? Clock : index === 1 ? Target : Lightbulb;
+          {benefits.map((benefit, index) => {
+            const IconComponent = benefit.icon;
             return (
               <motion.div
                 key={benefit.title}

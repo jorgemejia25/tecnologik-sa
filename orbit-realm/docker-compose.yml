@@ -1,0 +1,60 @@
+version: '3.8'
+services:
+  # Aplicación web principal con nginx
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    container_name: orbit-realm-nginx
+    networks:
+      - orbit-network
+    
+  # Base de datos PostgreSQL para Odoo
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/pgdata
+    restart: unless-stopped
+    container_name: orbit-postgres
+    networks:
+      - orbit-network
+    ports:
+      - "5433:5432"
+
+  # Odoo 18
+  odoo:
+    image: odoo:18.0
+    depends_on:
+      - postgres
+    environment:
+      HOST: postgres
+      USER: odoo
+      PASSWORD: odoo_password
+    volumes:
+      - odoo_data:/var/lib/odoo
+      - ./odoo/config:/etc/odoo
+      - ./odoo/addons:/mnt/extra-addons
+    ports:
+      - "8069:8069"
+    restart: unless-stopped
+    container_name: orbit-odoo
+    networks:
+      - orbit-network
+
+networks:
+  orbit-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  odoo_data:
+    driver: local

@@ -1,5 +1,6 @@
 node_modules
-dist
+# dist - Comentado para permitir dist/spa para nginx
+# dist
 .git
 .gitignore
 README.md
@@ -40,7 +41,8 @@ tmp
 types
 .git
 .gitignore
-dist
+# dist - Comentado para permitir dist/spa para nginx
+# dist
 service
 tests
 fixtures-pages

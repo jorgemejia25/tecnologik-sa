@@ -10,3 +10,11 @@
 export interface DemoResponse {
   message: string;
 }
+
+// Simple wrapper to obtain site content JSON (client-side usage)
+// Returns any to avoid circular import of types; components merge with defaultContent
+export async function fetchContent(): Promise<any> {
+  const res = await fetch('/api/content', { credentials: 'include' });
+  if (!res.ok) throw new Error('Failed to load content');
+  return res.json();
+}

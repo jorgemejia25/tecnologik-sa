@@ -1,77 +1,35 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { Button } from './ui/button';
-import type { SiteContent } from '@shared/content';
-import { defaultContent } from '@shared/content';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [header, setHeader] = useState(defaultContent.header);
-  const [isAuthed, setIsAuthed] = useState(false);
 
-  useEffect(() => {
-    fetch('/api/content', { credentials: 'include' })
-      .then(r => r.json())
-      .then((data: SiteContent) => { if (data?.header) setHeader(data.header); })
-      .catch(() => {});
-    // Check session to decide if we show Sign out
-    fetch('/api/auth/session', { credentials: 'include' })
-      .then(r => r.json())
-      .then((s) => setIsAuthed(Boolean(s?.user)))
-      .catch(() => setIsAuthed(false));
-  }, []);
-
-  async function onSignOut() {
-    try {
-      const r = await fetch('/api/auth/csrf', { credentials: 'include' });
-      const dj = await r.json();
-      const token = (dj?.csrfToken && typeof dj.csrfToken === 'object') ? dj.csrfToken?.value : dj?.csrfToken;
-      const body = new URLSearchParams({ csrfToken: String(token || ''), callbackUrl: '/login' }).toString();
-      const res = await fetch('/api/auth/signout?callbackUrl=/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded', Accept: 'application/json, text/plain, */*' },
-        credentials: 'include',
-        body,
-      });
-      if (res.status >= 300 && res.status < 400) {
-        const loc = res.headers.get('location') || '/login';
-        window.location.href = loc;
-        return;
-      }
-      const ct = res.headers.get('content-type') || '';
-      if (ct.includes('application/json')) {
-        try {
-          const data = await res.json();
-          if (data?.url) {
-            window.location.href = data.url;
-            return;
-          }
-        } catch {}
-      }
-      window.location.href = '/login';
-    } catch {
-      window.location.href = '/login';
-    }
-  }
+  const navigation = [
+    { name: 'Servicios', href: '#servicios' },
+    { name: 'Metodología', href: '#metodologia' },
+    { name: 'Certificaciones', href: '#certificaciones' },
+    { name: 'Integraciones', href: '#integraciones' },
+  ];
 
   return (
-    <header className="fixed top-0 w-full z-50 blur-bg border-b border-border/10">
+    <header className="fixed top-0 w-full z-50 blur-bg border-b border-border/10 bg-white/80 backdrop-blur-lg">
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-16 sm:h-18 items-center justify-between">
           {/* Logo */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="flex items-center"
+            className="flex items-center flex-shrink-0"
           >
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="gradient-bg w-8 h-8 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">{header?.brandLetter}</span>
+            <Link to="/" className="flex items-center space-x-2 sm:space-x-3">
+              <div className="gradient-bg w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center shadow-lg">
+                <span className="text-white font-bold text-sm sm:text-base">T</span>
               </div>
-              <span className="text-xl font-bold text-foreground">{header?.brandName}</span>
+              <span className="text-lg sm:text-xl font-bold text-foreground truncate">Tecnologik</span>
             </Link>
           </motion.div>
 
@@ -83,7 +41,7 @@ export default function Header() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="ml-10 flex items-baseline space-x-8"
             >
-              {(header?.nav ?? []).map((item, index) => (
+              {navigation.map((item, index) => (
                 <motion.a
                   key={item.name}
                   href={item.href}
@@ -105,81 +63,86 @@ export default function Header() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="hidden md:block"
           >
-            <div className="flex items-center gap-3">
-              <Button
-                className="gradient-bg text-white hover:shadow-lg hover:shadow-tech-primary/25 transition-all duration-300"
-                size="sm"
-              >
-                Contactar
-              </Button>
-              {isAuthed ? (
-                <Button variant="outline" size="sm" onClick={onSignOut}>Cerrar sesión</Button>
-              ) : (
-                <Link to="/login" className="text-sm font-medium text-foreground hover:text-tech-primary">Iniciar sesión</Link>
-              )}
-            </div>
+            <Button
+              className="gradient-bg text-white hover:shadow-lg hover:shadow-tech-primary/25 transition-all duration-300"
+              size="sm"
+            >
+              Contactar
+            </Button>
           </motion.div>
 
           {/* Mobile menu button */}
           <div className="md:hidden">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-foreground"
+            <motion.div
+              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.05 }}
             >
-              {isMenuOpen ? (
-                <X className="h-5 w-5" />
-              ) : (
-                <Menu className="h-5 w-5" />
-              )}
-            </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className={`relative p-2 rounded-lg transition-all duration-300 ${
+                  isMenuOpen
+                    ? 'bg-tech-primary/10 text-tech-primary shadow-lg'
+                    : 'text-foreground hover:bg-tech-primary/5'
+                }`}
+              >
+                <motion.div
+                  animate={{ rotate: isMenuOpen ? 180 : 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {isMenuOpen ? (
+                    <X className="h-5 w-5" />
+                  ) : (
+                    <Menu className="h-5 w-5" />
+                  )}
+                </motion.div>
+              </Button>
+            </motion.div>
           </div>
         </div>
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="md:hidden border-t border-border/10 mt-2 pt-4 pb-6"
+            initial={{ opacity: 0, height: 0, y: -10 }}
+            animate={{ opacity: 1, height: 'auto', y: 0 }}
+            exit={{ opacity: 0, height: 0, y: -10 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="md:hidden border-t border-blue-200/30 mt-2 pt-6 pb-6 bg-gradient-to-b from-white/5 to-blue-50/10 rounded-b-xl"
           >
-            <div className="flex flex-col space-y-4">
-              {(header?.nav ?? []).map((item) => (
-                <a
+            <div className="flex flex-col space-y-1">
+              {navigation.map((item, index) => (
+                <motion.a
                   key={item.name}
                   href={item.href}
-                  className="text-muted-foreground hover:text-tech-primary transition-colors duration-200 text-sm font-medium"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                  className="group relative px-4 py-3 text-muted-foreground hover:text-tech-primary transition-all duration-200 text-base font-medium rounded-lg hover:bg-tech-primary/5"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {item.name}
-                </a>
+                  <span className="relative z-10">{item.name}</span>
+                  <motion.div
+                    className="absolute inset-0 bg-tech-primary/5 rounded-lg opacity-0 group-hover:opacity-100"
+                    initial={false}
+                    transition={{ duration: 0.2 }}
+                  />
+                </motion.a>
               ))}
-              <Button
-                className="gradient-bg text-white hover:shadow-lg hover:shadow-tech-primary/25 transition-all duration-300 mt-4"
-                size="sm"
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.4 }}
+                className="pt-4 px-4"
               >
-                Contactar
-              </Button>
-              {isAuthed ? (
                 <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => { setIsMenuOpen(false); onSignOut(); }}
-                >
-                  Cerrar sesión
-                </Button>
-              ) : (
-                <Link
-                  to="/login"
-                  className="text-sm font-medium text-foreground hover:text-tech-primary"
+                  className="w-full gradient-bg text-white hover:shadow-lg hover:shadow-tech-primary/25 transition-all duration-300 py-3 text-base font-medium"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Iniciar sesión
-                </Link>
-              )}
+                  Contactar
+                </Button>
+              </motion.div>
             </div>
           </motion.div>
         )}
