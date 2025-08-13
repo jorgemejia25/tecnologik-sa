@@ -1,0 +1,214 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /**
+   * Tailwind CSS theme for Tecnologik S.A.
+   * Modern blue palette inspired by Vercel's design
+   * All color variables expressed as HSL values.
+  */
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 215 100% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 215 25% 96%;
+    --secondary-foreground: 215 100% 25%;
+
+    --muted: 215 16% 96%;
+    --muted-foreground: 215 16% 45%;
+
+    --accent: 215 100% 96%;
+    --accent-foreground: 215 100% 25%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 215 16% 91%;
+    --input: 215 16% 91%;
+    --ring: 215 100% 50%;
+
+    --radius: 0.75rem;
+
+    /* Blue palette */
+    --blue-50: 215 100% 98%;
+    --blue-100: 215 100% 95%;
+    --blue-200: 215 100% 90%;
+    --blue-300: 215 100% 80%;
+    --blue-400: 215 100% 65%;
+    --blue-500: 215 100% 50%;
+    --blue-600: 215 100% 40%;
+    --blue-700: 215 100% 30%;
+    --blue-800: 215 100% 20%;
+    --blue-900: 215 100% 15%;
+    --blue-950: 215 100% 8%;
+
+    /* Tecnologik brand colors */
+    --tech-primary: 215 100% 50%;
+    --tech-secondary: 215 25% 25%;
+    --tech-accent: 195 100% 45%;
+    --tech-gradient-from: 215 100% 50%;
+    --tech-gradient-to: 195 100% 45%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 215 30% 6%;
+    --foreground: 210 40% 98%;
+
+    --card: 215 30% 8%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 215 30% 8%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 215 100% 60%;
+    --primary-foreground: 215 30% 6%;
+
+    --secondary: 215 20% 15%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 215 20% 15%;
+    --muted-foreground: 215 16% 65%;
+
+    --accent: 215 20% 15%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 50%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 215 20% 15%;
+    --input: 215 20% 15%;
+    --ring: 215 100% 60%;
+
+    /* Blue palette - dark mode */
+    --blue-50: 215 30% 8%;
+    --blue-100: 215 30% 12%;
+    --blue-200: 215 30% 18%;
+    --blue-300: 215 50% 25%;
+    --blue-400: 215 80% 35%;
+    --blue-500: 215 100% 50%;
+    --blue-600: 215 100% 60%;
+    --blue-700: 215 100% 70%;
+    --blue-800: 215 100% 80%;
+    --blue-900: 215 100% 85%;
+    --blue-950: 215 100% 92%;
+
+    /* Tecnologik brand colors - dark mode */
+    --tech-primary: 215 100% 60%;
+    --tech-secondary: 215 20% 75%;
+    --tech-accent: 195 100% 55%;
+    --tech-gradient-from: 215 100% 60%;
+    --tech-gradient-to: 195 100% 55%;
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-tech-primary to-tech-accent bg-clip-text text-transparent;
+  }
+
+  .gradient-bg {
+    @apply bg-gradient-to-r from-tech-gradient-from to-tech-gradient-to;
+  }
+
+  .tech-shadow {
+    box-shadow: 0 20px 50px -12px hsl(var(--tech-primary) / 0.25);
+  }
+
+  .blur-bg {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  @keyframes blob {
+    0% {
+      transform: translate(0px, 0px) scale(1);
+    }
+    33% {
+      transform: translate(30px, -50px) scale(1.1);
+    }
+    66% {
+      transform: translate(-20px, 20px) scale(0.9);
+    }
+    100% {
+      transform: translate(0px, 0px) scale(1);
+    }
+  }
+
+  .animate-blob {
+    animation: blob 7s infinite;
+  }
+
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 0 0 20px hsl(var(--tech-primary) / 0.3);
+    }
+    50% {
+      box-shadow: 0 0 40px hsl(var(--tech-primary) / 0.6);
+    }
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+}
