@@ -7,6 +7,8 @@ WEBROOT="/var/www/certbot"
 SERVICE_WEB="web"
 SERVICE_CERTBOT="certbot"
 FALLBACK_STANDALONE=0
+DOMAIN_PRIMARY="${DOMAINS[0]}"
+LIVE_DIR="/etc/letsencrypt/live/$DOMAIN_PRIMARY"
 
 red() { printf "\e[31m%s\e[0m\n" "$*"; }
 green() { printf "\e[32m%s\e[0m\n" "$*"; }
@@ -53,6 +55,22 @@ EOF
   fi
 fi
 
+backup_dummy_if_needed() {
+  # Si existe un cert y no es de Let's Encrypt lo archivamos antes de sobrescribir
+  if docker compose exec -T "$SERVICE_WEB" sh -c "test -f $LIVE_DIR/fullchain.pem" >/dev/null 2>&1; then
+    if ! docker compose exec -T "$SERVICE_WEB" sh -c "openssl x509 -in $LIVE_DIR/fullchain.pem -noout -issuer 2>/dev/null | grep -qi \"Let's Encrypt\""; then
+      TS=$(date +%Y%m%d-%H%M%S)
+      yellow "Detectado certificado dummy/no-LE. Archivando como fullchain.pem.$TS.bak"
+      docker compose exec -T "$SERVICE_WEB" sh -c "cp $LIVE_DIR/fullchain.pem $LIVE_DIR/fullchain.pem.$TS.bak || true"
+      docker compose exec -T "$SERVICE_WEB" sh -c "cp $LIVE_DIR/privkey.pem $LIVE_DIR/privkey.pem.$TS.bak || true"
+    fi
+  fi
+}
+
+show_issuer() {
+  docker compose exec -T "$SERVICE_WEB" sh -c "openssl x509 -in $LIVE_DIR/fullchain.pem -noout -issuer 2>/dev/null || true" | sed 's/^/[issuer] /'
+}
+
 if [ "$FALLBACK_STANDALONE" -eq 0 ]; then
   # Verificar publicación de puerto 80
   if ! docker compose port "$SERVICE_WEB" 80 >/dev/null 2>&1; then
@@ -70,14 +88,17 @@ if [ "$FALLBACK_STANDALONE" -eq 0 ]; then
   if [ "$HTTP_CODE" != "200" ] && [ "$HTTP_CODE" != "301" ]; then
     red "El webroot no sirve archivos correctamente (HTTP $HTTP_CODE)."; exit 1; fi
 
+  backup_dummy_if_needed
   yellow "Emitiendo certificado para: ${DOMAINS[*]}";
   ARGS=(certonly --webroot -w "$WEBROOT" --agree-tos --no-eff-email --email "$EMAIL")
   for d in "${DOMAINS[@]}"; do ARGS+=(-d "$d"); done
   set -x
   docker compose run --rm "$SERVICE_CERTBOT" "${ARGS[@]}"
   set +x
-  green "Certificado emitido (si no hubo errores). Reinicia nginx:";
-  echo "  docker compose restart $SERVICE_WEB";
+  green "Certificado emitido (si no hubo errores).";
+  show_issuer
+  yellow "Si ves Let's Encrypt arriba, el watcher recargará nginx en unos segundos. Si no, revisa logs de certbot.";
+  echo "Para recarga manual: docker compose exec $SERVICE_WEB nginx -s reload"
 else
   yellow "Modo standalone: deteniendo temporalmente nginx si está activo";
   docker compose stop "$SERVICE_WEB" || true
@@ -90,4 +111,6 @@ else
   set +x
   green "Certificado emitido (standalone). Levantando nginx:";
   docker compose up -d "$SERVICE_WEB"
+  show_issuer
+  yellow "Si el issuer no es Let's Encrypt, algo falló.";
 fi
