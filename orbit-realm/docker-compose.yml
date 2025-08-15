@@ -101,12 +101,21 @@ services:
       EMAIL: "admin@tecnologik.net"
     entrypoint: /bin/sh
     # IMPORTANTE: Se escapan $ como $$ para que docker compose no los expanda al parsear.
-    command: >-
-      -c 'set -e;
-      domain_args="";
-      for d in $$(echo "$$DOMAINS" | tr , " "); do domain_args="$$domain_args -d $$d"; done;
-      echo "Emitiendo para: $$DOMAINS";
-      certbot certonly --webroot -w /var/www/certbot --agree-tos --no-eff-email --email "$$EMAIL" $$domain_args;'
+    command: |
+      -c '
+      set -e
+      domain_args=""
+      first_domain=$$(echo "$$DOMAINS" | cut -d, -f1)
+      if [ -d "/etc/letsencrypt/live/$$first_domain" ]; then
+        echo "[certbot_init] Certificado ya existe para $$first_domain. Usa renew o --force-renewal si necesitas regenerar."
+        exit 0
+      fi
+      for d in $$(echo "$$DOMAINS" | tr , " "); do
+        domain_args="$$domain_args -d $$d"
+      done
+      echo "Emitiendo para: $$DOMAINS"
+      certbot certonly --webroot -w /var/www/certbot --agree-tos --no-eff-email --email "$$EMAIL" $$domain_args
+      '
     volumes:
       - certbot_www:/var/www/certbot
       - certbot_etc:/etc/letsencrypt
