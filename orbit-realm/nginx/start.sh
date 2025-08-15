@@ -4,12 +4,22 @@ DOMAIN=tecnologik.net
 LIVE_DIR=/etc/letsencrypt/live/$DOMAIN
 DUMMY_CREATED=0
 
+PROMO_DIR="/etc/letsencrypt/live/${DOMAIN}-0001"
+
 is_le_cert() {
   # Devuelve 0 si el issuer menciona Let's Encrypt
   openssl x509 -in "$1" -noout -issuer 2>/dev/null | grep -qi "Let's Encrypt"
 }
 
 # Si no existe el cert real, generar dummy para que nginx arranque
+if [ -d "$PROMO_DIR" ] && [ -f "$PROMO_DIR/fullchain.pem" ] && is_le_cert "$PROMO_DIR/fullchain.pem"; then
+  echo "[start] Detectado certificado LE en $PROMO_DIR. Promocionando a ruta canónica..."
+  mkdir -p "$LIVE_DIR"
+  cp "$PROMO_DIR/privkey.pem" "$LIVE_DIR/privkey.pem" || true
+  cp "$PROMO_DIR/fullchain.pem" "$LIVE_DIR/fullchain.pem" || true
+  cp "$PROMO_DIR/chain.pem" "$LIVE_DIR/chain.pem" || true
+fi
+
 if [ ! -f "$LIVE_DIR/fullchain.pem" ] || [ ! -f "$LIVE_DIR/privkey.pem" ]; then
   echo "[start] No se encontraron certificados para $DOMAIN. Generando dummy temporal..."
   mkdir -p "$LIVE_DIR"
@@ -20,12 +30,10 @@ if [ ! -f "$LIVE_DIR/fullchain.pem" ] || [ ! -f "$LIVE_DIR/privkey.pem" ]; then
   cp "$LIVE_DIR/fullchain.pem" "$LIVE_DIR/chain.pem" || true
   DUMMY_CREATED=1
 else
-  # Si existe un cert verificar si ya es de Let's Encrypt para no considerarlo dummy
   if is_le_cert "$LIVE_DIR/fullchain.pem"; then
-    echo "[start] Certificado Let's Encrypt ya presente para $DOMAIN."
+    echo "[start] Certificado Let's Encrypt presente para $DOMAIN."
   else
-    echo "[start] Certificado existente no es Let's Encrypt (posible dummy). Continuando..."
-    DUMMY_CREATED=1
+    echo "[start] Certificado existente no es Let's Encrypt (posible dummy)."; DUMMY_CREATED=1
   fi
 fi
 
