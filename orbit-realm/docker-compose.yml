@@ -100,7 +100,13 @@ services:
       DOMAINS: "tecnologik.net,www.tecnologik.net"
       EMAIL: "admin@tecnologik.net"
     entrypoint: /bin/sh
-    command: -c 'set -e; IFS="," read -r -a arr <<< "$DOMAINS"; args=""; for d in "${arr[@]}"; do args="$args -d $d"; done; certbot certonly --webroot -w /var/www/certbot --agree-tos --no-eff-email --email "$EMAIL" $args;'
+    # IMPORTANTE: Se escapan $ como $$ para que docker compose no los expanda al parsear.
+    command: >-
+      -c 'set -e;
+      domain_args="";
+      for d in $$(echo "$$DOMAINS" | tr , " "); do domain_args="$$domain_args -d $$d"; done;
+      echo "Emitiendo para: $$DOMAINS";
+      certbot certonly --webroot -w /var/www/certbot --agree-tos --no-eff-email --email "$$EMAIL" $$domain_args;'
     volumes:
       - certbot_www:/var/www/certbot
       - certbot_etc:/etc/letsencrypt
