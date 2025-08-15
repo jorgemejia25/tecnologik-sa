@@ -12,8 +12,8 @@ services:
       - certbot_etc:/etc/letsencrypt
       # Montar config dinámica para evitar rebuilds al ajustar nginx / certificados
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
-      # (Opcional) montar build estático si cambias dist sin reconstruir imagen
-      # - ./dist/spa:/usr/share/nginx/html:ro
+      # Montar build estático para cambios sin reconstruir imagen
+      - ./dist/spa:/usr/share/nginx/html:ro
     networks:
       - orbit-network
     restart: unless-stopped
