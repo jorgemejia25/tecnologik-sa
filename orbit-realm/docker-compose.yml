@@ -10,6 +10,11 @@ services:
     volumes:
       - certbot_www:/var/www/certbot
       - certbot_etc:/etc/letsencrypt
+      # Montar config dinámica para evitar rebuilds al ajustar nginx / certificados
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/start.sh:/start.sh:ro
+      # (Opcional) montar build estático si cambias dist sin reconstruir imagen
+      # - ./dist/spa:/usr/share/nginx/html:ro
     networks:
       - orbit-network
     restart: unless-stopped
