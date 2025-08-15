@@ -1,20 +1,22 @@
-version: '3.8'
 services:
-  # Aplicación web principal con nginx
   web:
     build:
       context: .
       dockerfile: Dockerfile.nginx
-    ports:
-      - "80:80"
-    restart: unless-stopped
     container_name: orbit-realm-nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - certbot_www:/var/www/certbot
+      - certbot_etc:/etc/letsencrypt
     networks:
       - orbit-network
-    
-  # Base de datos PostgreSQL para Odoo
+    restart: unless-stopped
+
   postgres:
     image: postgres:15
+    container_name: orbit-postgres
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: odoo
@@ -22,16 +24,15 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - postgres_data:/var/lib/postgresql/data/pgdata
-    restart: unless-stopped
-    container_name: orbit-postgres
+    ports:
+      - 5433:5432
     networks:
       - orbit-network
-    ports:
-      - "5433:5432"
+    restart: unless-stopped
 
-  # Odoo 18
   odoo:
     image: odoo:18.0
+    container_name: orbit-odoo
     depends_on:
       - postgres
     environment:
@@ -43,11 +44,32 @@ services:
       - ./odoo/config:/etc/odoo
       - ./odoo/addons:/mnt/extra-addons
     ports:
-      - "8069:8069"
-    restart: unless-stopped
-    container_name: orbit-odoo
+      - 8069:8069
     networks:
       - orbit-network
+    restart: unless-stopped
+
+  certbot:
+    image: certbot/certbot:latest
+    container_name: orbit-certbot
+    volumes:
+      - certbot_www:/var/www/certbot
+      - certbot_etc:/etc/letsencrypt
+    networks:
+      - orbit-network
+    restart: unless-stopped
+
+  certbot_renew:
+    image: certbot/certbot:latest
+    container_name: orbit-certbot-renew
+    entrypoint: /bin/sh
+    command: -c "while :; do certbot renew --webroot -w /var/www/certbot --quiet --agree-tos; sleep 12h; done"
+    volumes:
+      - certbot_www:/var/www/certbot
+      - certbot_etc:/etc/letsencrypt
+    networks:
+      - orbit-network
+    restart: unless-stopped
 
 networks:
   orbit-network:
@@ -57,4 +79,8 @@ volumes:
   postgres_data:
     driver: local
   odoo_data:
+    driver: local
+  certbot_www:
+    driver: local
+  certbot_etc:
     driver: local

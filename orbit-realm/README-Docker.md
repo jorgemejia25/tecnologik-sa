@@ -121,7 +121,71 @@ docker system prune -f
 
 Para producción, considera:
 1. Cambiar las contraseñas por defecto
-2. Configurar SSL/HTTPS
+2. Configurar SSL/HTTPS (ver sección siguiente)
 3. Configurar backup automático de PostgreSQL
 4. Usar variables de entorno para credenciales
 5. Configurar proxy reverso si es necesario
+
+## SSL / HTTPS con Let's Encrypt (tecnologik.net)
+
+La configuración ya incluye:
+- Redirección HTTP -> HTTPS
+- Montaje de volúmenes compartidos para Certbot (`certbot_www`, `certbot_etc`)
+- Renovación automática cada 12h (ejecuta `certbot renew` silenciosamente)
+
+### 1. Apuntar DNS
+Crea registros A para:
+```
+tecnologik.net -> IP_del_servidor
+www.tecnologik.net -> IP_del_servidor
+```
+Espera la propagación (puedes usar `dig +short tecnologik.net`).
+
+### 2. Levantar servicios base
+```bash
+docker compose up -d web
+```
+
+### 3. Emitir certificados iniciales
+Ejecuta Certbot (reemplaza email si deseas):
+```bash
+docker compose run --rm certbot certbot certonly \
+	--webroot -w /var/www/certbot \
+	-d tecnologik.net -d www.tecnologik.net \
+	--email admin@tecnologik.net --agree-tos --no-eff-email
+```
+Esto poblará el volumen `certbot_etc` con los certificados.
+
+### 4. Reiniciar nginx para cargar certificados
+```bash
+docker compose restart web
+```
+
+### 5. Verificar
+```bash
+curl -I https://tecnologik.net
+```
+Debes ver `HTTP/2 200`.
+
+### Renovación
+El contenedor `certbot` corre en bucle cada 12h ejecutando `certbot renew`. Los certificados válidos por 60 días se renovarán ~30 días antes de expirar. Puedes forzar prueba con:
+```bash
+docker compose run --rm certbot certbot renew --dry-run
+```
+
+### Revocar (opcional)
+```bash
+docker compose run --rm certbot certbot revoke --cert-path /etc/letsencrypt/live/tecnologik.net/cert.pem
+```
+
+### Cambios de Dominio
+Si agregas un subdominio (ej: `app.tecnologik.net`), vuelve a emitir:
+```bash
+docker compose run --rm certbot certbot certonly \
+	--webroot -w /var/www/certbot \
+	-d tecnologik.net -d www.tecnologik.net -d app.tecnologik.net
+docker compose restart web
+```
+
+### Hardening opcional
+Revisa cabeceras de seguridad y añade `Content-Security-Policy` adaptada a tus recursos.
