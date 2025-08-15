@@ -51,6 +51,12 @@ services:
       - ./odoo/addons:/mnt/extra-addons
     ports:
       - 8069:8069
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8069/web/login"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
     networks:
       - orbit-network
     restart: unless-stopped
