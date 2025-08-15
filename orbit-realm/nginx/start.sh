@@ -11,6 +11,26 @@ is_le_cert() {
   openssl x509 -in "$1" -noout -issuer 2>/dev/null | grep -qi "Let's Encrypt"
 }
 
+ensure_fullchain_integrity() {
+  if [ -f "$LIVE_DIR/fullchain.pem" ]; then
+    local count
+    count=$(grep -c "BEGIN CERTIFICATE" "$LIVE_DIR/fullchain.pem" || echo 0)
+    if [ "$count" -lt 2 ] && [ -f "$LIVE_DIR/chain.pem" ]; then
+      echo "[start] fullchain.pem parece incompleto (solo $count cert). Reconstruyendo concatenando leaf + chain..."
+      # Intentar derivar leaf (primer cert actual) y append chain entero
+      cp "$LIVE_DIR/fullchain.pem" "$LIVE_DIR/fullchain.pem.leaf.bak" || true
+      # Si existe cert.pem úsalo como leaf base, si no reutiliza fullchain actual
+      if [ -f "$LIVE_DIR/cert.pem" ]; then
+        cat "$LIVE_DIR/cert.pem" "$LIVE_DIR/chain.pem" > "$LIVE_DIR/fullchain.pem.new" || return 0
+      else
+        cat "$LIVE_DIR/fullchain.pem" "$LIVE_DIR/chain.pem" > "$LIVE_DIR/fullchain.pem.new" || return 0
+      fi
+      mv "$LIVE_DIR/fullchain.pem.new" "$LIVE_DIR/fullchain.pem"
+      echo "[start] fullchain.pem reconstruido."
+    fi
+  fi
+}
+
 # Si no existe el cert real, generar dummy para que nginx arranque
 if [ -d "$PROMO_DIR" ] && [ -f "$PROMO_DIR/fullchain.pem" ] && is_le_cert "$PROMO_DIR/fullchain.pem"; then
   echo "[start] Detectado certificado LE en $PROMO_DIR. Promocionando a ruta canónica..."
@@ -19,6 +39,8 @@ if [ -d "$PROMO_DIR" ] && [ -f "$PROMO_DIR/fullchain.pem" ] && is_le_cert "$PROM
   cp "$PROMO_DIR/fullchain.pem" "$LIVE_DIR/fullchain.pem" || true
   cp "$PROMO_DIR/chain.pem" "$LIVE_DIR/chain.pem" || true
 fi
+
+ensure_fullchain_integrity
 
 if [ ! -f "$LIVE_DIR/fullchain.pem" ] || [ ! -f "$LIVE_DIR/privkey.pem" ]; then
   echo "[start] No se encontraron certificados para $DOMAIN. Generando dummy temporal..."
@@ -36,6 +58,8 @@ else
     echo "[start] Certificado existente no es Let's Encrypt (posible dummy)."; DUMMY_CREATED=1
   fi
 fi
+
+ensure_fullchain_integrity
 
 # Lanzar nginx en segundo plano para permitir emisión posterior si se usa webroot
 nginx -g 'daemon off;' &
