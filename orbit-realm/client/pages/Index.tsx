@@ -6,23 +6,20 @@ import BusinessContinuity from "@/components/BusinessContinuity";
 import Methodology from "@/components/Methodology";
 import Integrations from "@/components/Integrations";
 import Footer from "@/components/Footer";
-import { useSiteContent } from "@/hooks/useSiteContent";
 
 export default function Index() {
-  const { content, loading, error } = useSiteContent();
-
   return (
     <div className="min-h-screen">
       <Header />
       <main>
-        <Hero data={content?.hero} />
-        <Services data={content?.services} />
-  <Benefits data={content?.benefitsSection} />
-  <BusinessContinuity data={content?.continuity} />
+        <Hero />
+        <Services />
+        <Benefits />
+        <BusinessContinuity />
         <Methodology />
-        <Integrations integrations={content?.integrations} certifications={content?.certifications} />
+        <Integrations />
       </main>
-      <Footer data={content?.footer} />
+      <Footer />
     </div>
   );
 }

@@ -1,20 +1,90 @@
-import { motion, type Variants } from 'framer-motion';
-import type { SiteContent } from '@shared/content';
-import { getIconComponent } from '../lib/icon-map';
+import { motion } from 'framer-motion';
+import { 
+  Shield, 
+  FileText, 
+  HardDrive, 
+  AlertTriangle, 
+  TrendingDown,
+  CheckCircle,
+  ArrowRight,
+  Building,
+  Clock,
+  Target
+} from 'lucide-react';
 
-interface BusinessContinuityProps { data?: SiteContent['continuity']; }
+export default function BusinessContinuity() {
+  const processes = [
+    {
+      icon: Building,
+      acronym: 'BCM',
+      title: 'Business Continuity Management',
+      subtitle: 'Administración de Continuidad de negocio',
+      description: 'Brindar respuesta efectiva para recuperar o continuar las operaciones',
+      color: 'from-blue-500 to-blue-600',
+      bgColor: 'bg-blue-50',
+      borderColor: 'border-blue-200'
+    },
+    {
+      icon: FileText,
+      acronym: 'BCP',
+      title: 'Business Continuity Planning',
+      subtitle: 'Plan de continuidad del negocio',
+      description: 'Proceso y documentación de procedimientos para responder a eventos de interrupción de operaciones',
+      color: 'from-blue-400 to-blue-500',
+      bgColor: 'bg-blue-50',
+      borderColor: 'border-blue-200'
+    },
+    {
+      icon: HardDrive,
+      acronym: 'DRP',
+      title: 'Disaster Recovery Plan',
+      subtitle: 'Plan de recuperación ante desastres',
+      description: 'Documentación y actividades a desarrollar para la recuperación de información',
+      color: 'from-blue-600 to-blue-700',
+      bgColor: 'bg-blue-50',
+      borderColor: 'border-blue-200'
+    },
+    {
+      icon: AlertTriangle,
+      acronym: 'RIA',
+      title: 'Risk Impact Analysis',
+      subtitle: 'Evaluación de riesgo',
+      description: 'Análisis de amenazas, peligros potenciales e interrupción de la continuidad de los procesos de negocios',
+      color: 'from-blue-700 to-blue-800',
+      bgColor: 'bg-blue-50',
+      borderColor: 'border-blue-200'
+    },
+    {
+      icon: TrendingDown,
+      acronym: 'BIA',
+      title: 'Business Impact Analysis',
+      subtitle: 'Análisis de Impacto',
+      description: 'Análisis de impacto operacional y financiero al negocio, identificación y mitigación de impactos negativos',
+      color: 'from-blue-800 to-blue-900',
+      bgColor: 'bg-blue-50',
+      borderColor: 'border-blue-200'
+    }
+  ];
 
-export default function BusinessContinuity({ data }: BusinessContinuityProps) {
-  const processes = (data?.processes || []).map(p => ({
-    ...p,
-    Icon: getIconComponent(p.icon)
-  }));
-  const benefits = (data?.benefits || []).map(b => ({
-    ...b,
-    Icon: getIconComponent(b.icon)
-  }));
+  const benefits = [
+    {
+      icon: Shield,
+      title: 'Protección Integral',
+      description: 'Salvaguarda completa de operaciones críticas'
+    },
+    {
+      icon: Clock,
+      title: 'Respuesta Rápida',
+      description: 'Tiempos de recuperación minimizados'
+    },
+    {
+      icon: Target,
+      title: 'Objetivos Claros',
+      description: 'Métricas definidas de continuidad'
+    }
+  ];
 
-  const containerVariants: Variants = {
+  const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -24,14 +94,14 @@ export default function BusinessContinuity({ data }: BusinessContinuityProps) {
     }
   };
 
-  const itemVariants: Variants = {
+  const itemVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
         duration: 0.6,
-        ease: [0.16, 1, 0.3, 1]
+        ease: "easeOut"
       }
     }
   };
@@ -65,13 +135,14 @@ export default function BusinessContinuity({ data }: BusinessContinuityProps) {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-tech-primary opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-tech-primary"></span>
             </span>
-            {data?.badge || 'Metodología estructurada y probada'}
+            Metodología estructurada y probada
           </motion.div>
           <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl mb-6">
-            <span className="gradient-text">{data?.title || 'Proceso de Gestión Integral'}</span>
+            <span className="gradient-text">Proceso de Gestión Integral</span>
           </h2>
           <p className="mx-auto max-w-3xl text-lg leading-8 text-muted-foreground">
-            {data?.subtitle || 'Metodología completa para la continuidad del negocio que asegura la resistencia operacional y la recuperación efectiva ante cualquier eventualidad.'}
+            Metodología completa para la continuidad del negocio que asegura la resistencia
+            operacional y la recuperación efectiva ante cualquier eventualidad.
           </p>
         </motion.div>
 
@@ -84,8 +155,8 @@ export default function BusinessContinuity({ data }: BusinessContinuityProps) {
             viewport={{ once: true }}
             className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 max-w-6xl"
           >
-            {processes.map((process) => {
-              const IconComponent = process.Icon;
+            {processes.map((process, index) => {
+              const IconComponent = process.icon;
               return (
                 <motion.div
                   key={process.acronym}
@@ -147,7 +218,7 @@ export default function BusinessContinuity({ data }: BusinessContinuityProps) {
           <div className="flex justify-center">
             <div className="grid grid-cols-1 gap-8 md:grid-cols-3 max-w-4xl">
               {benefits.map((benefit, index) => {
-                const IconComponent = benefit.Icon;
+                const IconComponent = benefit.icon;
                 return (
                   <motion.div
                     key={benefit.title}

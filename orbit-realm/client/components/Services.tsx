@@ -1,32 +1,65 @@
-import { motion, type Variants } from 'framer-motion';
-import { ArrowRight, CheckCircle2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { 
+  Server, 
+  Shield, 
+  TrendingUp, 
+  ArrowRight,
+  CheckCircle2,
+  Cpu,
+  Lock,
+  BarChart3
+} from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import type { SiteContent } from '@shared/content';
-import { getIconComponent } from '../lib/icon-map';
 
-interface ServicesProps { data?: SiteContent['services']; }
+export default function Services() {
+  const services = [
+    {
+      icon: Server,
+      title: 'Evaluación de Infraestructura',
+      description: 'Evaluaciones del estado actual de infraestructura tecnológica, capacidad, rendimiento y escalabilidad.',
+      features: [
+        'Evaluación de capacidad y rendimiento',
+        'Análisis de escalabilidad completo',
+        'Auditoría integral de recursos tecnológicos',
+        'Identificación de cuellos de botella y limitaciones'
+      ],
+      color: 'from-blue-500 to-blue-600',
+      bgColor: 'bg-blue-50',
+      textColor: 'text-blue-600'
+    },
+    {
+      icon: Shield,
+      title: 'Seguridad Informática',
+      description: 'Seguridad informática y cumplimiento de normativas (ISO 27001:2022 / NIST 2.0).',
+      features: [
+        'Cumplimiento ISO 27001:2022',
+        'Implementación NIST 2.0',
+        'Evaluación de controles de seguridad',
+        'Identificación de riesgos y vulnerabilidades',
+        'Protección de datos y gestión del ciclo de vida de la información'
+      ],
+      color: 'from-emerald-500 to-emerald-600',
+      bgColor: 'bg-emerald-50',
+      textColor: 'text-emerald-600'
+    },
+    {
+      icon: TrendingUp,
+      title: 'Optimización y Mejora',
+      description: 'Oportunidades de mejora en optimización de recursos, maximizar la eficiencia operativa y abordar necesidades no atendidas.',
+      features: [
+        'Optimización de recursos tecnológicos',
+        'Maximización de la eficiencia operativa',
+        'Identificación de necesidades no atendidas',
+        'Estrategias de mejora continua y escalabilidad'
+      ],
+      color: 'from-purple-500 to-purple-600',
+      bgColor: 'bg-purple-50',
+      textColor: 'text-purple-600'
+    }
+  ];
 
-const COLOR_PRESETS = [
-  { color: 'from-blue-500 to-blue-600', text: 'text-blue-600' },
-  { color: 'from-emerald-500 to-emerald-600', text: 'text-emerald-600' },
-  { color: 'from-purple-500 to-purple-600', text: 'text-purple-600' }
-];
-
-export default function Services({ data }: ServicesProps) {
-  const services = (data?.items || []).map((s, i) => {
-    const preset = COLOR_PRESETS[i % COLOR_PRESETS.length];
-    return {
-      Icon: s.icon ? getIconComponent(s.icon) : null,
-      title: s.title,
-      description: s.description,
-      features: s.features,
-      color: preset.color,
-      textColor: preset.text
-    };
-  });
-
-  const containerVariants: Variants = {
+  const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -36,14 +69,14 @@ export default function Services({ data }: ServicesProps) {
     }
   };
 
-  const itemVariants: Variants = {
+  const itemVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
         duration: 0.6,
-        ease: [0.16, 1, 0.3, 1]
+        ease: "easeOut"
       }
     }
   };
@@ -60,22 +93,11 @@ export default function Services({ data }: ServicesProps) {
           className="text-center mb-16"
         >
           <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-4">
-            {(() => {
-              const raw = data?.headerTitle ?? 'Nuestros Servicios';
-              if (!raw.toLowerCase().includes('servicio')) {
-                return (<><span>{raw}</span> <span className="gradient-text">Servicios</span></>);
-              }
-              // Resaltar última ocurrencia de "Servicios"
-              const idx = raw.toLowerCase().lastIndexOf('servicios');
-              if (idx === -1) return raw;
-              const before = raw.slice(0, idx);
-              const highlighted = raw.slice(idx, idx + 'Servicios'.length);
-              const after = raw.slice(idx + 'Servicios'.length);
-              return (<><span>{before}</span><span className="gradient-text">{highlighted}</span><span>{after}</span></>);
-            })()}
+            Nuestros <span className="gradient-text">Servicios</span>
           </h2>
           <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-            {data?.headerSubtitle || 'Soluciones tecnológicas integrales diseñadas para transformar y optimizar la infraestructura digital de tu empresa.'}
+            Soluciones tecnológicas integrales diseñadas para transformar y optimizar 
+            la infraestructura digital de tu empresa.
           </p>
         </motion.div>
 
@@ -87,7 +109,8 @@ export default function Services({ data }: ServicesProps) {
           viewport={{ once: true }}
           className="grid grid-cols-1 gap-8 lg:grid-cols-3"
         >
-          {services.map((service) => {
+          {services.map((service, index) => {
+            const IconComponent = service.icon;
             return (
               <motion.div
                 key={service.title}
@@ -97,11 +120,9 @@ export default function Services({ data }: ServicesProps) {
                 <Card className="h-full border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 overflow-hidden">
                   <CardHeader className="relative">
                     <div className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-5`} />
-                    {service.Icon && (
-                      <div className={`inline-flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br ${service.color} mb-4`}>
-                        <service.Icon className="h-6 w-6 text-white" />
-                      </div>
-                    )}
+                    <div className={`inline-flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br ${service.color} mb-4`}>
+                      <IconComponent className="h-6 w-6 text-white" />
+                    </div>
                     <CardTitle className="text-xl font-bold text-foreground group-hover:text-tech-primary transition-colors">
                       {service.title}
                     </CardTitle>

@@ -1,14 +1,9 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import { Button } from './ui/button';
-import type { HeroContent } from '@shared/content';
 
-interface HeroProps {
-  data?: HeroContent;
-}
-
-export default function Hero({ data }: HeroProps) {
-  const features = data?.features || [
+export default function Hero() {
+  const features = [
     'Evaluación integral de infraestructura',
     'Ciberseguridad empresarial avanzada',
     'Optimización de procesos tecnológicos'
@@ -41,7 +36,7 @@ export default function Hero({ data }: HeroProps) {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-tech-primary opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-tech-primary"></span>
             </span>
-            {data?.badge || 'Líder en consultoría tecnológica empresarial'}
+            Líder en consultoría tecnológica empresarial
           </motion.div>
 
           {/* Main heading */}
@@ -51,8 +46,8 @@ export default function Hero({ data }: HeroProps) {
             transition={{ duration: 0.8, delay: 0.5 }}
             className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl mb-6"
           >
-            {data?.title || 'Hacemos que la gestión de tu'}{' '}
-            <span className="gradient-text">{data?.highlight || 'empresa sea eficiente'}</span>
+            Hacemos que la gestión de tu{' '}
+            <span className="gradient-text">empresa sea eficiente</span>
           </motion.h1>
 
           {/* Subtitle */}
@@ -62,7 +57,9 @@ export default function Hero({ data }: HeroProps) {
             transition={{ duration: 0.8, delay: 0.6 }}
             className="mx-auto max-w-2xl text-lg leading-8 text-muted-foreground mb-8"
           >
-            {data?.subtitle || 'En Tecnologik S.A. transformamos la infraestructura tecnológica de tu empresa con soluciones integrales de evaluación, ciberseguridad y optimización que impulsan el crecimiento sostenible.'}
+            En Tecnologik S.A. transformamos la infraestructura tecnológica de tu empresa 
+            con soluciones integrales de evaluación, ciberseguridad y optimización que 
+            impulsan el crecimiento sostenible.
           </motion.p>
 
           {/* Features list */}
@@ -97,7 +94,7 @@ export default function Hero({ data }: HeroProps) {
               size="lg"
               className="gradient-bg text-white hover:shadow-xl hover:shadow-tech-primary/25 transition-all duration-300 group"
             >
-              {data?.primaryCta || 'Comenzar evaluación gratuita'}
+              Comenzar evaluación gratuita
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Button>
             <Button
@@ -105,7 +102,7 @@ export default function Hero({ data }: HeroProps) {
               size="lg"
               className="border-tech-primary text-tech-primary hover:bg-tech-primary hover:text-white transition-colors duration-300"
             >
-              {data?.secondaryCta || 'Ver nuestros servicios'}
+              Ver nuestros servicios
             </Button>
           </motion.div>
 
@@ -116,11 +113,11 @@ export default function Hero({ data }: HeroProps) {
             transition={{ duration: 0.8, delay: 1 }}
             className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-3"
           >
-            {(data?.stats || [
+            {[
               { value: '200+', label: 'Empresas atendidas' },
               { value: '99.9%', label: 'Uptime garantizado' },
               { value: '24/7', label: 'Soporte técnico' }
-            ]).map((stat, index) => (
+            ].map((stat, index) => (
               <motion.div
                 key={stat.label}
                 initial={{ opacity: 0, scale: 0.9 }}

@@ -1,28 +1,209 @@
-import { motion, type Variants } from 'framer-motion';
-import { CheckCircle2, TrendingUp, Target } from 'lucide-react';
+import { motion } from 'framer-motion';
+import {
+  Target,
+  Database,
+  Thermometer,
+  ShoppingCart,
+  BarChart3,
+  Users,
+  Shield,
+  Clock,
+  ArrowRight,
+  CheckCircle2,
+  TrendingUp,
+  Eye,
+  Cpu,
+  Truck,
+  Package,
+  AlertTriangle,
+  Calendar,
+  Award,
+  Gauge
+} from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Progress } from './ui/progress';
-import type { SiteContent } from '@shared/content';
-import { getIconComponent } from '../lib/icon-map';
 
-interface DigitalTransformationProps { data?: SiteContent['digitalTransformation']; }
+export default function DigitalTransformation() {
+  const objective = {
+    title: 'Estrategia de Transformación Digital',
+    description: 'Modernizar los procesos operativos, comerciales y de control sanitario mediante soluciones digitales que mejoren la eficiencia, la trazabilidad, la experiencia del cliente y la toma de decisiones.'
+  };
 
-export default function DigitalTransformation({ data }: DigitalTransformationProps) {
-  const keyComponents = (data?.keyComponents || []).map(k => ({
-    ...k,
-    Icon: getIconComponent(k.icon)
-  }));
-  const roadmap = data?.roadmap || [];
-  const successIndicators = (data?.successIndicators || []).map(i => ({
-    ...i,
-    Icon: getIconComponent(i.icon)
-  }));
-  const benefitsOperativos = data?.benefitsOperativos || [];
-  const benefitsEstrategicos = data?.benefitsEstrategicos || [];
+  const keyComponents = [
+    {
+      icon: Eye,
+      title: 'Diagnóstico y Evaluación Inicial',
+      description: 'Análisis integral de procesos actuales',
+      details: [
+        'Analizar procesos: compras, producción, almacenamiento, distribución, ventas y postventa',
+        'Identificar cuellos de botella y riesgos sanitarios',
+        'Evaluar pérdida de producto e ineficiencias logísticas',
+        'Determinar nivel de madurez digital actual'
+      ],
+      color: 'from-blue-500 to-blue-600',
+      bgColor: 'bg-blue-50'
+    },
+    {
+      icon: Database,
+      title: 'Infraestructura Tecnológica',
+      description: 'Sistemas ERP, WMS y TMS integrados',
+      details: [
+        'ERP con módulos de inventario, ventas, compras y contabilidad',
+        'Sistema WMS para control de almacén en frío y rotación FIFO/FEFO',
+        'TMS para optimización de rutas y control de temperaturas',
+        'Integración completa entre todos los sistemas'
+      ],
+      color: 'from-emerald-500 to-emerald-600',
+      bgColor: 'bg-emerald-50'
+    },
+    {
+      icon: Thermometer,
+      title: 'Trazabilidad y Control Sanitario',
+      description: 'IoT y monitoreo en tiempo real',
+      details: [
+        'Sensores IoT en cámaras frigoríficas y camiones',
+        'Registro automático de temperatura y humedad',
+        'Escaneo de lotes por código QR o RFID',
+        'Cumplimiento de normas sanitarias digitales'
+      ],
+      color: 'from-purple-500 to-purple-600',
+      bgColor: 'bg-purple-50'
+    },
+    {
+      icon: ShoppingCart,
+      title: 'Digitalización Comercial',
+      description: 'E-commerce B2B y CRM integrado',
+      details: [
+        'Plataforma e-commerce B2B para distribuidores y restaurantes',
+        'CRM para seguimiento de clientes y oportunidades',
+        'Catálogos actualizados con precios por cliente',
+        'Automatización de facturación electrónica'
+      ],
+      color: 'from-orange-500 to-orange-600',
+      bgColor: 'bg-orange-50'
+    },
+    {
+      icon: BarChart3,
+      title: 'Analítica y Toma de Decisiones',
+      description: 'Business Intelligence y predictive analytics',
+      details: [
+        'Cuadros de mando con KPIs clave',
+        'Análisis de rotación de inventario y mermas',
+        'Seguimiento de cumplimiento de entregas',
+        'Modelos predictivos para demanda estacional'
+      ],
+      color: 'from-red-500 to-red-600',
+      bgColor: 'bg-red-50'
+    },
+    {
+      icon: Users,
+      title: 'Cultura y Cambio Organizacional',
+      description: 'Capacitación y gestión del cambio',
+      details: [
+        'Plan de capacitación en competencias digitales',
+        'Líder de transformación digital designado',
+        'Gestión del cambio con comunicación clara',
+        'Implementación por piloto y etapas'
+      ],
+      color: 'from-indigo-500 to-indigo-600',
+      bgColor: 'bg-indigo-50'
+    },
+    {
+      icon: Shield,
+      title: 'Ciberseguridad',
+      description: 'ISO 27001:2022 y protección de datos',
+      details: [
+        'Control de accesos a sistemas críticos',
+        'Aplicación de ISO 27001:2022 / 93 Controles',
+        'Backups automatizados y cifrado de datos',
+        'Protección específica de infraestructura IoT'
+      ],
+      color: 'from-teal-500 to-teal-600',
+      bgColor: 'bg-teal-50'
+    }
+  ];
 
-  const containerVariants: Variants = {
+  const roadmap = [
+    {
+      stage: 1,
+      title: 'Planificación',
+      activities: 'Diagnóstico, selección de soluciones, diseño de roadmap',
+      duration: '1–2 meses',
+      status: 'pending'
+    },
+    {
+      stage: 2,
+      title: 'Implementación ERP + WMS',
+      activities: 'Configuración, migración de datos, capacitación',
+      duration: '3–6 meses',
+      status: 'pending'
+    },
+    {
+      stage: 3,
+      title: 'Trazabilidad y Sensores',
+      activities: 'IoT + integración con ERP',
+      duration: '2–4 meses',
+      status: 'pending'
+    },
+    {
+      stage: 4,
+      title: 'CRM y Canal Digital B2B',
+      activities: 'Diseño e implementación de ecommerce y CRM',
+      duration: '2–3 meses',
+      status: 'pending'
+    },
+    {
+      stage: 5,
+      title: 'BI y Analítica',
+      activities: 'Dashboards e informes automáticos',
+      duration: '1–2 meses',
+      status: 'pending'
+    },
+    {
+      stage: 6,
+      title: 'Mejora Continua',
+      activities: 'Monitoreo, ajuste y automatización',
+      duration: 'Permanente',
+      status: 'pending'
+    }
+  ];
+
+  const successIndicators = [
+    {
+      icon: Clock,
+      metric: '% de pedidos entregados a tiempo',
+      target: '> 95%',
+      color: 'text-blue-600'
+    },
+    {
+      icon: AlertTriangle,
+      metric: 'Reducción de mermas por temperatura',
+      target: '< 2%',
+      color: 'text-emerald-600'
+    },
+    {
+      icon: TrendingUp,
+      metric: 'Incremento en ventas canal digital B2B',
+      target: '+ 25%',
+      color: 'text-purple-600'
+    },
+    {
+      icon: Gauge,
+      metric: 'Tiempo promedio de facturación',
+      target: '- 50%',
+      color: 'text-orange-600'
+    },
+    {
+      icon: Award,
+      metric: 'Satisfacción del cliente (NPS)',
+      target: '> 8.5',
+      color: 'text-red-600'
+    }
+  ];
+
+  const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -32,14 +213,14 @@ export default function DigitalTransformation({ data }: DigitalTransformationPro
     }
   };
 
-  const itemVariants: Variants = {
+  const itemVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
         duration: 0.6,
-        ease: [0.16, 1, 0.3, 1]
+        ease: "easeOut"
       }
     }
   };
@@ -56,10 +237,10 @@ export default function DigitalTransformation({ data }: DigitalTransformationPro
           className="text-center mb-16"
         >
           <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-4">
-            <span className="gradient-text">{data?.objectiveTitle || 'Estrategia de Transformación Digital'}</span>
+            <span className="gradient-text">{objective.title}</span>
           </h2>
           <p className="mx-auto max-w-4xl text-lg text-muted-foreground leading-relaxed">
-            {data?.objectiveDescription || 'Modernizar procesos mediante soluciones digitales.'}
+            {objective.description}
           </p>
         </motion.div>
 
@@ -80,8 +261,8 @@ export default function DigitalTransformation({ data }: DigitalTransformationPro
               viewport={{ once: true }}
               className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
             >
-              {keyComponents.map((component) => {
-                const IconComponent = component.Icon;
+              {keyComponents.map((component, index) => {
+                const IconComponent = component.icon;
                 return (
                   <motion.div
                     key={component.title}
@@ -180,7 +361,7 @@ export default function DigitalTransformation({ data }: DigitalTransformationPro
               
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
                 {successIndicators.map((indicator, index) => {
-                  const IconComponent = indicator.Icon;
+                  const IconComponent = indicator.icon;
                   return (
                     <motion.div
                       key={indicator.metric}
@@ -226,12 +407,22 @@ export default function DigitalTransformation({ data }: DigitalTransformationPro
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    {benefitsOperativos.map((b, i) => (
-                      <div key={i} className="flex items-start gap-3">
-                        <CheckCircle2 className="h-5 w-5 text-emerald-500 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm">{b}</span>
-                      </div>
-                    ))}
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="h-5 w-5 text-emerald-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm">Mayor eficiencia en procesos de almacenamiento y distribución</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="h-5 w-5 text-emerald-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm">Reducción significativa de mermas por control de temperatura</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="h-5 w-5 text-emerald-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm">Optimización de rutas y tiempos de entrega</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="h-5 w-5 text-emerald-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm">Automatización de procesos administrativos</span>
+                    </div>
                   </CardContent>
                 </Card>
 
@@ -243,12 +434,22 @@ export default function DigitalTransformation({ data }: DigitalTransformationPro
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    {benefitsEstrategicos.map((b, i) => (
-                      <div key={i} className="flex items-start gap-3">
-                        <CheckCircle2 className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm">{b}</span>
-                      </div>
-                    ))}
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm">Mejor experiencia del cliente con entregas puntuales</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm">Trazabilidad completa para cumplimiento sanitario</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm">Nuevos canales de venta digitales B2B</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm">Toma de decisiones basada en datos en tiempo real</span>
+                    </div>
                   </CardContent>
                 </Card>
               </div>

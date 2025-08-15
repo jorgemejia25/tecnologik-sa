@@ -1,16 +1,96 @@
-import { motion, type Variants } from 'framer-motion';
-import type { SiteContent } from '@shared/content';
-import { getIconComponent } from '../lib/icon-map';
+import { motion } from 'framer-motion';
+import { 
+  Zap, 
+  Database, 
+  TrendingUp, 
+  DollarSign,
+  Settings,
+  Gauge,
+  Share2,
+  Shield,
+  Brain,
+  Trophy,
+  Users,
+  PiggyBank
+} from 'lucide-react';
 
+export default function Benefits() {
+  const benefitCategories = [
+    {
+      icon: Zap,
+      title: 'AUTOMATIZACIÓN',
+      color: 'from-blue-500 to-blue-600',
+      bgColor: 'bg-blue-50',
+      benefits: [
+        {
+          icon: Settings,
+          title: 'Optimización de procesos',
+          description: 'Automatización de tareas repetitivas para mayor eficiencia'
+        },
+        {
+          icon: Gauge,
+          title: 'Aumento de la agilidad',
+          description: 'Respuesta más rápida a cambios del mercado'
+        }
+      ]
+    },
+    {
+      icon: Database,
+      title: 'DEMOCRATIZACIÓN DE DATOS',
+      color: 'from-blue-400 to-blue-500',
+      bgColor: 'bg-blue-50',
+      benefits: [
+        {
+          icon: Share2,
+          title: 'Datos habilitados para líneas de negocio',
+          description: 'Acceso descentralizado a información crítica'
+        },
+        {
+          icon: Shield,
+          title: 'Resiliencia operativa',
+          description: 'Continuidad del negocio garantizada'
+        }
+      ]
+    },
+    {
+      icon: TrendingUp,
+      title: 'MODERNIZACIÓN DEL ANÁLISIS',
+      color: 'from-blue-600 to-blue-700',
+      bgColor: 'bg-blue-50',
+      benefits: [
+        {
+          icon: Brain,
+          title: 'Toma de decisiones estratégicas',
+          description: 'Análisis avanzado para decisiones informadas'
+        },
+        {
+          icon: Trophy,
+          title: 'Ventaja competitiva',
+          description: 'Diferenciación en el mercado mediante tecnología'
+        }
+      ]
+    },
+    {
+      icon: DollarSign,
+      title: 'COSTOS',
+      color: 'from-blue-700 to-blue-800',
+      bgColor: 'bg-blue-50',
+      benefits: [
+        {
+          icon: Users,
+          title: 'Aumento de colaboración y productividad',
+          description: 'Equipos más eficientes y conectados'
+        },
+        {
+          icon: PiggyBank,
+          title: 'Ahorro de costos',
+          description: 'Reducción significativa en gastos operativos'
+        }
+      ]
+    }
+  ];
 
-interface BenefitsProps {
-  data?: SiteContent['benefitsSection'];
-}
-
-export default function Benefits({ data }: BenefitsProps) {
-  const benefitCategories = data?.categories || [];
-
-  const containerVariants: Variants = {
+  const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -20,14 +100,14 @@ export default function Benefits({ data }: BenefitsProps) {
     }
   };
 
-  const itemVariants: Variants = {
+  const itemVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
         duration: 0.6,
-        ease: [0.16, 1, 0.3, 1]
+        ease: "easeOut"
       }
     }
   };
@@ -61,13 +141,14 @@ export default function Benefits({ data }: BenefitsProps) {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-tech-primary opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-tech-primary"></span>
             </span>
-            {data?.badge || 'Impacto real en tu organización'}
+            Impacto real en tu organización
           </motion.div>
           <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl mb-6">
-            <span className="gradient-text">{data?.title || 'Beneficios'}</span>{!data?.subtitle && data?.title !== 'Beneficios' ? ' de Nuestras Soluciones' : ''}
+            <span className="gradient-text">Beneficios</span> de Nuestras Soluciones
           </h2>
           <p className="mx-auto max-w-3xl text-lg leading-8 text-muted-foreground">
-            {data?.subtitle || 'Transforma tu empresa con tecnología que impulsa el crecimiento, optimiza costos y proporciona ventajas competitivas sostenibles.'}
+            Transforma tu empresa con tecnología que impulsa el crecimiento, optimiza costos
+            y proporciona ventajas competitivas sostenibles.
           </p>
         </motion.div>
 
@@ -80,7 +161,7 @@ export default function Benefits({ data }: BenefitsProps) {
           className="grid grid-cols-1 gap-8 lg:grid-cols-2 xl:grid-cols-4"
         >
           {benefitCategories.map((category, categoryIndex) => {
-            const CategoryIcon = getIconComponent(category.icon);
+            const CategoryIcon = category.icon;
             return (
               <motion.div
                 key={category.title}
@@ -106,7 +187,7 @@ export default function Benefits({ data }: BenefitsProps) {
                   {/* Benefits List */}
                   <div className="p-6 space-y-5">
                     {category.benefits.map((benefit, benefitIndex) => {
-                      const BenefitIcon = getIconComponent(benefit.icon);
+                      const BenefitIcon = benefit.icon;
                       return (
                         <motion.div
                           key={benefit.title}

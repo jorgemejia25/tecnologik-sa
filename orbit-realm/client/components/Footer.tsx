@@ -6,15 +6,17 @@ import {
   MapPin, 
   Linkedin, 
   Twitter, 
-  Facebook
+  Facebook,
+  ArrowRight
 } from 'lucide-react';
-import type { SiteContent } from '@shared/content';
+import { Button } from './ui/button';
 
-interface FooterProps { data?: SiteContent['footer']; }
-
-export default function Footer({ data }: FooterProps) {
-  const socialMap = { LinkedIn: Linkedin, Twitter: Twitter, Facebook: Facebook } as const;
-  const socialLinks = (data?.socials || []).map(s => ({ ...s, Icon: socialMap[s.name] }));
+export default function Footer() {
+  const socialLinks = [
+    { name: 'LinkedIn', icon: Linkedin, href: '#' },
+    { name: 'Twitter', icon: Twitter, href: '#' },
+    { name: 'Facebook', icon: Facebook, href: '#' }
+  ];
 
   return (
     <footer className="bg-gradient-to-b from-background to-blue-50/30 border-t border-blue-200/50">
@@ -34,20 +36,27 @@ export default function Footer({ data }: FooterProps) {
             >
               <Link to="/" className="flex items-center space-x-3 mb-6">
                 <div className="gradient-bg w-10 h-10 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold">{data?.brand.logoLetter || 'T'}</span>
+                  <span className="text-white font-bold">T</span>
                 </div>
-                <span className="text-xl font-bold text-foreground">{data?.brand.companyName || 'Tecnologik S.A.'}</span>
+                <span className="text-xl font-bold text-foreground">Tecnologik S.A.</span>
               </Link>
               <p className="text-muted-foreground mb-8 leading-relaxed">
-                {data?.brand.description || 'Transformamos la infraestructura tecnológica de tu empresa con soluciones integrales.'}
+                Transformamos la infraestructura tecnológica de tu empresa con soluciones
+                integrales que impulsan el crecimiento sostenible y la eficiencia operacional.
               </p>
 
-              {/* Contact Information (solo email aquí, ubicación aparece en su propia columna) */}
+              {/* Contact Information */}
               <div className="space-y-4">
                 <div className="flex items-center gap-3 text-sm">
                   <Mail className="h-4 w-4 text-tech-primary flex-shrink-0" />
-                  <a href={`mailto:${data?.contact.email || 'info@tecnologik.net'}`} className="text-muted-foreground hover:text-tech-primary transition-colors">
-                    {data?.contact.email || 'info@tecnologik.net'}
+                  <a href="mailto:info@tecnologik.net" className="text-muted-foreground hover:text-tech-primary transition-colors">
+                    info@tecnologik.net
+                  </a>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <span className="w-4 h-4 flex-shrink-0"></span>
+                  <a href="https://www.tecnologik.net" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-tech-primary transition-colors">
+                    www.tecnologik.net
                   </a>
                 </div>
               </div>
@@ -66,9 +75,10 @@ export default function Footer({ data }: FooterProps) {
                 Teléfonos
               </h4>
               <div className="space-y-3 text-sm text-muted-foreground">
-                {(data?.contact.phoneNumbers || [data?.contact.phone || '+(502) 0000-0000']).map(p => (
-                  <div key={p}>{p}</div>
-                ))}
+                <div>+(502) 2372-2114</div>
+                <div>+(502) 2372-2115</div>
+                <div>+(502) 4770-1350</div>
+                <div>+(502) 5590-6934</div>
               </div>
             </motion.div>
 
@@ -84,14 +94,17 @@ export default function Footer({ data }: FooterProps) {
                 <MapPin className="h-5 w-5 text-tech-primary" />
                 Ubicación
               </h4>
-              <div className="text-sm text-muted-foreground mb-8 leading-relaxed whitespace-pre-line">
-                {data?.contact.location || 'Ciudad'}
+              <div className="text-sm text-muted-foreground mb-8 leading-relaxed">
+                <div>Diagonal 6 12-42 zona 10</div>
+                <div>Edificio Design Center</div>
+                <div>Torre 1 Oficina 402</div>
+                <div className="font-medium text-foreground mt-2">Ciudad de Guatemala</div>
               </div>
 
               <h4 className="font-semibold text-foreground mb-4">Síguenos</h4>
               <div className="flex gap-3">
                 {socialLinks.map((social) => {
-                  const IconComponent = social.Icon;
+                  const IconComponent = social.icon;
                   return (
                     <a
                       key={social.name}
@@ -118,7 +131,7 @@ export default function Footer({ data }: FooterProps) {
         >
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
-              {data?.copyright || '© 2024 Tecnologik S.A. Todos los derechos reservados.'}
+              © 2024 Tecnologik S.A. Todos los derechos reservados.
             </p>
             <div className="flex gap-6 text-sm text-muted-foreground">
               <a href="#" className="hover:text-tech-primary transition-colors">
