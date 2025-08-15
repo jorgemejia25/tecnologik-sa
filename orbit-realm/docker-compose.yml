@@ -49,6 +49,16 @@ services:
       - orbit-network
     restart: unless-stopped
 
+  # -------------------------------------------------------------
+  # Servicio Certbot (ejecuciones manuales):
+  #  Emitir nuevo certificado:
+  #    docker compose run --rm certbot certonly \\
+  #      --webroot -w /var/www/certbot \\
+  #      -d tecnologik.net -d www.tecnologik.net \\
+  #      --email admin@tecnologik.net --agree-tos --no-eff-email
+  #  Prueba renovación:
+  #    docker compose run --rm certbot certbot renew --dry-run
+  # -------------------------------------------------------------
   certbot:
     image: certbot/certbot:latest
     container_name: orbit-certbot
@@ -59,17 +69,42 @@ services:
       - orbit-network
     restart: unless-stopped
 
+  # -------------------------------------------------------------
+  # Renovación automática: ejecuta 'certbot renew' cada 12h silenciosamente.
+  # Al renovar puedes forzar recarga de nginx agregando --deploy-hook "nginx -s reload"
+  # -------------------------------------------------------------
   certbot_renew:
     image: certbot/certbot:latest
     container_name: orbit-certbot-renew
     entrypoint: /bin/sh
-    command: -c "while :; do certbot renew --webroot -w /var/www/certbot --quiet --agree-tos; sleep 12h; done"
+    command: -c "while :; do certbot renew --webroot -w /var/www/certbot --quiet --agree-tos --deploy-hook 'nginx -s reload' || true; sleep 12h; done"
     volumes:
       - certbot_www:/var/www/certbot
       - certbot_etc:/etc/letsencrypt
     networks:
       - orbit-network
     restart: unless-stopped
+
+  # -------------------------------------------------------------
+  # Emisión inicial automatizada (opcional): editar DOMAINS y EMAIL y ejecutar
+  #   docker compose run --rm certbot_init
+  # Tras emitir, reiniciar: docker compose restart web
+  # -------------------------------------------------------------
+  certbot_init:
+    image: certbot/certbot:latest
+    container_name: orbit-certbot-init
+    environment:
+      # Ajusta dominios y correo antes de usar
+      DOMAINS: "tecnologik.net,www.tecnologik.net"
+      EMAIL: "admin@tecnologik.net"
+    entrypoint: /bin/sh
+    command: -c 'set -e; IFS="," read -r -a arr <<< "$DOMAINS"; args=""; for d in "${arr[@]}"; do args="$args -d $d"; done; certbot certonly --webroot -w /var/www/certbot --agree-tos --no-eff-email --email "$EMAIL" $args;'
+    volumes:
+      - certbot_www:/var/www/certbot
+      - certbot_etc:/etc/letsencrypt
+    networks:
+      - orbit-network
+    restart: "no"
 
 networks:
   orbit-network:
