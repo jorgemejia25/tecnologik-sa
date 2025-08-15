@@ -13,6 +13,8 @@ services:
     networks:
       - orbit-network
     restart: unless-stopped
+    depends_on:
+      - odoo
 
   postgres:
     image: postgres:15
